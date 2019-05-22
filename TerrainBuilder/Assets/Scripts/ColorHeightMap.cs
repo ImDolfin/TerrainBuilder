@@ -8,7 +8,7 @@ public class ColorHeightMap : MonoBehaviour
 
     private Color[] colorHeightMap;
 
-    public void createNewColorHeightMap(double[,] heightArray)
+    public void createNewColorHeightMap(float[,] heightArray)
     {
         int sideLength = heightArray.GetLength(0);
 
@@ -26,7 +26,7 @@ public class ColorHeightMap : MonoBehaviour
     /// 
     /// </summary>
     /// <param name="heightArray"></param>
-    private void retrieveColorHeightMap(double[,] heightArray)
+    private void retrieveColorHeightMap(float[,] heightArray)
     {
         int sideLength = heightArray.GetLength(0);
 
@@ -36,7 +36,7 @@ public class ColorHeightMap : MonoBehaviour
         {
             for (int j = 0; j < sideLength; j++)
             {
-                colorHeightMap[i * sideLength + j] = Color.Lerp(Color.black, Color.white, (float)heightArray[i, j]);
+                colorHeightMap[i * sideLength + j] = Color.Lerp(Color.black, Color.white, heightArray[i, j]);
             }
         }
     }

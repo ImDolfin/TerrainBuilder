@@ -7,13 +7,13 @@ public class DiamondSquareAlgorithm
 {
 
     //The map for the DiamondSquare Algorithm
-    private double[,] map;
+    private float[,] map;
 
     //random number generator
     private System.Random random = new System.Random();
 
-    //Average Offeset
-    private double offset = 500.0;
+    //Average Offset
+    private float offset = 100.0f;
 
     /// <summary>
     /// 
@@ -21,17 +21,19 @@ public class DiamondSquareAlgorithm
     /// <param name="mapSideLength">has to be a value of 2^n + 1</param>
     /// <param name="seedValue"></param>
     /// <returns></returns>
-    public double[,] generateMapArray(int mapSideLength, double seedValue)
+    public float[,] generateMapArray(int mapSideLength, float seedValue, float offset)
     {
+        this.offset = offset;
+
         if (!isPowerOfTwo((uint)(mapSideLength - 1)))
         {
             throw new ArgumentException("illegal argument, the provided side length is not 2^n + 1 long");
         }
 
-        map = new double[mapSideLength, mapSideLength];
+        map = new float[mapSideLength, mapSideLength];
         setMapCorners(mapSideLength, seedValue);
 
-        for (int sideLength = mapSideLength - 1; sideLength >= 2; sideLength /= 2, offset /= 2.0)
+        for (int sideLength = mapSideLength - 1; sideLength >= 2; sideLength /= 2, offset /= 2.0f)
         {
             int halfedSide = sideLength / 2;
 
@@ -40,7 +42,7 @@ public class DiamondSquareAlgorithm
             {
                 for (int j = 0; j < mapSideLength - 1; j += sideLength)
                 {
-                    squareCalculations(i, j, halfedSide, offset, mapSideLength);
+                    squareCalculations(i, j, halfedSide, offset, sideLength);
                 }
             }
 
@@ -53,8 +55,20 @@ public class DiamondSquareAlgorithm
                 }
             }
         }
-
+        setNegativeToZero(mapSideLength);
         return map;
+    }
+
+    private void setNegativeToZero(int mapSideLength)
+    {
+        for(int i = 0; i < mapSideLength - 1; i++)
+            {
+            for (int j = 0; j < mapSideLength - 1; j++)
+            {
+                if (map[i, j] < 0f)
+                    map[i, j] = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -64,17 +78,38 @@ public class DiamondSquareAlgorithm
     /// <param name="j"></param>
     /// <param name="halfedSide"></param>
     /// <param name="offset"></param>
-    private void diamondCalculations(int i, int j, int halfedSide, double offset, int mapSideLength)
+    private void squareCalculations(int i, int j, int halfedSide, float offset, int sideLength)
     {
-        double average =
+        float average =
+                    map[i, j] + //top left
+                    map[i + sideLength, j] +//top right
+                    map[i, j + sideLength] + //lower left
+                    map[i + sideLength, j + sideLength];
+        average /= 4.0f;
+
+        //center is average plus random offset
+        map[i + halfedSide, j + halfedSide] = 
+            average + ((float)random.NextDouble() * 2 * offset) - offset;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="i"></param>
+    /// <param name="j"></param>
+    /// <param name="halfedSide"></param>
+    /// <param name="offset"></param>
+    private void diamondCalculations(int i, int j, int halfedSide, float offset, int mapSideLength)
+    {
+        float average =
                         map[(i - halfedSide + mapSideLength - 1) % (mapSideLength - 1), j] +
                         map[(i + halfedSide) % (mapSideLength - 1), j] +
                         map[i, (j + halfedSide) % (mapSideLength - 1)] +
                         map[i, (j - halfedSide + mapSideLength - 1) % (mapSideLength - 1)];
-        average /= 4.0;
+        average /= 4.0f;
 
         //center is average plus random offset
-        average = average + (random.NextDouble() * 2 * offset) - offset;
+        average = average + ((float)random.NextDouble() * 2 * offset) - offset;
 
         //update value at the center of the diamond
         map[i, j] = average;
@@ -86,35 +121,15 @@ public class DiamondSquareAlgorithm
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="i"></param>
-    /// <param name="j"></param>
-    /// <param name="halfedSide"></param>
-    /// <param name="offset"></param>
-    private void squareCalculations(int i, int j, int halfedSide, double offset, int mapSideLength)
-    {
-        double average =
-                    map[(i - halfedSide + mapSideLength - 1) % (mapSideLength - 1), j] +
-                    map[(i + halfedSide) % (mapSideLength - 1), j] +
-                    map[i, (j + halfedSide) % (mapSideLength - 1)] +
-                    map[i, (j - halfedSide + mapSideLength - 1) % (mapSideLength - 1)];
-
-        //center is average plus random offset
-        map[i + halfedSide, j + halfedSide] = average + (random.NextDouble() * 2 * offset) - offset;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="mapWidth"></param>
     /// <param name="mapLength"></param>
     /// <param name="maxHeight"></param>
-    private void setMapCorners(int mapSideLength, double seedValue)
+    private void setMapCorners(int mapSideLength, float seedValue)
     {
-        double randomGeneratedNumber = random.NextDouble() * (seedValue - 0) + 0;
-        map[0, mapSideLength - 1] = randomGeneratedNumber;
-        map[0, 0] = randomGeneratedNumber;
-        map[mapSideLength - 1, 0] = randomGeneratedNumber;
-        map[mapSideLength - 1, mapSideLength - 1] = randomGeneratedNumber;
+        map[0, mapSideLength - 1] = seedValue;
+        map[0, 0] = seedValue;
+        map[mapSideLength - 1, 0] = seedValue;
+        map[mapSideLength - 1, mapSideLength - 1] = seedValue;
     }
 
     /// <summary>
