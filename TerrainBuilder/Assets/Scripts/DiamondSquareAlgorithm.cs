@@ -23,6 +23,10 @@ public class DiamondSquareAlgorithm
     /// <returns></returns>
     public double[,] generateMapArray(int mapSideLength, double seedValue)
     {
+        if (!isPowerOfTwo((uint)(mapSideLength - 1)))
+        {
+            throw new ArgumentException("illegal argument, the provided side length is not 2^n + 1 long");
+        }
 
         map = new double[mapSideLength, mapSideLength];
         setMapCorners(mapSideLength, seedValue);
@@ -32,20 +36,20 @@ public class DiamondSquareAlgorithm
             int halfedSide = sideLength / 2;
 
             //generate the new square values
-            for (int x = 0; x < mapSideLength - 1; x += sideLength)
+            for (int i = 0; i < mapSideLength - 1; i += sideLength)
             {
-                for (int y = 0; y < mapSideLength - 1; y += sideLength)
+                for (int j = 0; j < mapSideLength - 1; j += sideLength)
                 {
-                    squareCalculations(x, y, halfedSide, offset, mapSideLength);
+                    squareCalculations(i, j, halfedSide, offset, mapSideLength);
                 }
             }
 
             //generate the diamond values
-            for (int x = 0; x < mapSideLength - 1; x += halfedSide)
+            for (int i = 0; i < mapSideLength - 1; i += halfedSide)
             {
-                for (int y = (x + halfedSide) % sideLength; y < mapSideLength - 1; y += sideLength)
+                for (int j = (i + halfedSide) % sideLength; j < mapSideLength - 1; j += sideLength)
                 {
-                    diamondCalculations(x, y, halfedSide, offset, mapSideLength);
+                    diamondCalculations(i, j, halfedSide, offset, mapSideLength);
                 }
             }
         }
@@ -56,46 +60,46 @@ public class DiamondSquareAlgorithm
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
+    /// <param name="i"></param>
+    /// <param name="j"></param>
     /// <param name="halfedSide"></param>
     /// <param name="offset"></param>
-    private void diamondCalculations(int x, int y, int halfedSide, double offset, int mapSideLength)
+    private void diamondCalculations(int i, int j, int halfedSide, double offset, int mapSideLength)
     {
         double average =
-                        map[(x - halfedSide + mapSideLength - 1) % (mapSideLength - 1), y] +
-                        map[(x + halfedSide) % (mapSideLength - 1), y] +
-                        map[x, (y + halfedSide) % (mapSideLength - 1)] +
-                        map[x, (y - halfedSide + mapSideLength - 1) % (mapSideLength - 1)];
+                        map[(i - halfedSide + mapSideLength - 1) % (mapSideLength - 1), j] +
+                        map[(i + halfedSide) % (mapSideLength - 1), j] +
+                        map[i, (j + halfedSide) % (mapSideLength - 1)] +
+                        map[i, (j - halfedSide + mapSideLength - 1) % (mapSideLength - 1)];
         average /= 4.0;
 
         //center is average plus random offset
         average = average + (random.NextDouble() * 2 * offset) - offset;
 
         //update value at the center of the diamond
-        map[x, y] = average;
+        map[i, j] = average;
 
-        if (x == 0) map[mapSideLength - 1, y] = average;
-        if (y == 0) map[x, mapSideLength - 1] = average;
+        if (i == 0) map[mapSideLength - 1, j] = average;
+        if (j == 0) map[i, mapSideLength - 1] = average;
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
+    /// <param name="i"></param>
+    /// <param name="j"></param>
     /// <param name="halfedSide"></param>
     /// <param name="offset"></param>
-    private void squareCalculations(int x, int y, int halfedSide, double offset, int mapSideLength)
+    private void squareCalculations(int i, int j, int halfedSide, double offset, int mapSideLength)
     {
         double average =
-                    map[(x - halfedSide + mapSideLength - 1) % (mapSideLength - 1), y] +
-                    map[(x + halfedSide) % (mapSideLength - 1), y] +
-                    map[x, (y + halfedSide) % (mapSideLength - 1)] +
-                    map[x, (y - halfedSide + mapSideLength - 1) % (mapSideLength - 1)];
+                    map[(i - halfedSide + mapSideLength - 1) % (mapSideLength - 1), j] +
+                    map[(i + halfedSide) % (mapSideLength - 1), j] +
+                    map[i, (j + halfedSide) % (mapSideLength - 1)] +
+                    map[i, (j - halfedSide + mapSideLength - 1) % (mapSideLength - 1)];
 
         //center is average plus random offset
-        map[x + halfedSide, y + halfedSide] = average + (random.NextDouble() * 2 * offset) - offset;
+        map[i + halfedSide, j + halfedSide] = average + (random.NextDouble() * 2 * offset) - offset;
     }
 
     /// <summary>
@@ -111,5 +115,15 @@ public class DiamondSquareAlgorithm
         map[0, 0] = randomGeneratedNumber;
         map[mapSideLength - 1, 0] = randomGeneratedNumber;
         map[mapSideLength - 1, mapSideLength - 1] = randomGeneratedNumber;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="number"></param>
+    /// <returns></returns>
+    private bool isPowerOfTwo(uint number)
+    {
+        return (number != 0) && ((number & (number - 1)) == 0);
     }
 }
