@@ -137,7 +137,7 @@ public class DiamondSquareAlgorithm
     /// </summary>
     /// <param name="number"></param>
     /// <returns></returns>
-    private bool isPowerOfTwo(uint number)
+    public bool isPowerOfTwo(uint number)
     {
         return (number != 0) && ((number & (number - 1)) == 0);
     }

@@ -8,6 +8,9 @@ public class MeshSpecs {
     public Vector2[] uvs;
     public Vector3[] normals;
 
+    public int firstXPosition;
+    public int firstYPosition;
+
     int triangleIndex;
 
     public MeshSpecs(int meshDimension)
@@ -32,8 +35,9 @@ public class MeshSpecs {
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uvs;
-        //mesh.normals = normals;
+        mesh.normals = normals;
         mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
         return mesh;
     }
 }
