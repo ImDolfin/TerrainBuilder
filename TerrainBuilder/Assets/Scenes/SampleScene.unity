@@ -327,7 +327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapDimension: 1025
   seedValue: 100
-  offset: 200
+  offset: 500
   material: {fileID: 2100000, guid: ef677ed91ba398b468fda720935e782f, type: 2}
 --- !u!23 &1108260425
 MeshRenderer:
@@ -338,7 +338,7 @@ MeshRenderer:
   m_GameObject: {fileID: 1108260423}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 0
+  m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
