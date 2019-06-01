@@ -196,13 +196,63 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 241309043}
-  m_LocalRotation: {x: 0.26343995, y: 0.007757942, z: 0.0021186632, w: 0.96464235}
-  m_LocalPosition: {x: 0, y: 2.73, z: -6.62}
+  m_LocalRotation: {x: 0.088827096, y: 0.0072614485, z: 0.0034562654, w: 0.99601465}
+  m_LocalPosition: {x: -0.03, y: 3.09, z: -8.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 30.545002, y: 1.07, z: 0.544}
+  m_LocalEulerAnglesHint: {x: 10.189, y: 0.878, z: 0.476}
+--- !u!21 &794605497
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterMaterial (Instance)
+  m_Shader: {fileID: 4800000, guid: 12c9151599dca954abe83d94b77b7009, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: bdf9d7ac9cee8d54893add4e57f5396d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 35c6816d7b818f44cb7d3aac4171a87b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap1:
+        m_Texture: {fileID: 2800000, guid: bdf9d7ac9cee8d54893add4e57f5396d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0.5435242, y: 0.48917177}
+    - _NormalMap2:
+        m_Texture: {fileID: 2800000, guid: 6f246582f8164de4488cda5a80e7565e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0.16305725, y: 0.20653918}
+    - _SpecularMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Ka: 0.5
+    - _Kd: 0.5
+    - _Ks: 0.669
+    - _Shininess: 90
+    - _xScroll1: 0.14
+    - _xScroll2: 0.047
+    - _yScroll1: 0.1
+    - _yScroll2: 0.072
+    m_Colors:
+    - _WaterColor: {r: 0.15, g: 0.61, b: 0.86, a: 1}
 --- !u!1 &1305354884
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,7 +304,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a71da85b821b9e84086976991f5c7527, type: 2}
+  - {fileID: 794605497}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -392,10 +442,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1321368156}
-  m_LocalRotation: {x: 0.21095039, y: -0.33142096, z: 0.07352196, w: 0.91665405}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: -0.015055119, y: -0.98513526, z: 0.11650433, w: 0.12533404}
+  m_LocalPosition: {x: 0, y: 3.14, z: -0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 25.815, y: -39.829002, z: -0.321}
+  m_LocalEulerAnglesHint: {x: 13.048, y: -165.10301, z: 3.4640002}
