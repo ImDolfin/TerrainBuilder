@@ -5,6 +5,7 @@
     {
 		// The input texture
         _MainTex ("Texture", 2D) = "white" {}
+		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
 		
 		_TopColor ("Top Color", Color) = (1,0,0,1)				// red
 		_MidColor ("Middle Color", Color) = (1,0.92,0.016,1) 	// yellow
@@ -105,9 +106,11 @@
 	  
 		fixed4 _TopColor, _MidColor, _BotColor, _WatColor;
 		float _BotHeight, _MidHeight, _TopHeight, _MidColorExtender;
+		sampler2D _ContourLineTex;
 			
 		struct Input {
 			float3 worldPos;
+			float2 uv_MainTex;
 		};
 		
 		void surf (Input IN, inout SurfaceOutput o) {			 
@@ -124,6 +127,8 @@
 				col = lerp(_MidColor, _TopColor, ((IN.worldPos.y - _MidHeight)/ _MidHeight)*_MidColorExtender);
 		
 			o.Albedo = col.rgb;
+			o.Albedo *= tex2D(_ContourLineTex, IN.uv_MainTex).rgb;
+			// o.Albedo += _ContourLineTex;
 			}
 		ENDCG
 		}
