@@ -326,9 +326,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapDimension: 1025
-  seedValue: 100
-  offset: 500
-  material: {fileID: 2100000, guid: ef677ed91ba398b468fda720935e782f, type: 2}
+  seedValue: 1
+  offset: 400
 --- !u!23 &1108260425
 MeshRenderer:
   m_ObjectHideFlags: 0
