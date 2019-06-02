@@ -163,9 +163,9 @@ public class DiamondSquareAlgorithm
     /// <param name="mapSideLength"> length of the arrays sides</param>
     private void setNegativeToZero(int mapSideLength)
     {
-        for (int i = 0; i < mapSideLength - 1; i++)
+        for (int i = 0; i < mapSideLength; i++)
         {
-            for (int j = 0; j < mapSideLength - 1; j++)
+            for (int j = 0; j < mapSideLength; j++)
             {
                 if (map[i, j] < 0f)
                     map[i, j] = 0;
