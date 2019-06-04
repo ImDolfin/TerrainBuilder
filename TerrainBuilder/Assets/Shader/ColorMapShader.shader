@@ -1,22 +1,19 @@
-﻿Shader "Unlit/Hure"
+﻿Shader "Unlit/ColorMapShader"
 {
 	// Property Definition --> Visible in IDE
     Properties
     {
-		// The input texture
+		// The input textures
+		_ColorTex("Color Texture", 2D) = "normal" {}
 		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
 		
-		// The Colors 
-		_TopColor ("Top Color", Color) = (1,0,0,1)				// red
-		_MidColor ("Middle Color", Color) = (1,0.92,0.016,1) 	// yellow
-		_BotColor ("Bottom Color", Color) = (0,1,0,1)			// green
-		_WatColor ("Water Color", Color) = (0,0,1,1)			// blue
+		// The Colors (if you want to create your own color gradient without color Map)
+		// _TopColor ("Top Color", Color) = (1,0,0,1)				// red
+		// _MidColor ("Middle Color", Color) = (1,0.92,0.016,1) 	// yellow
+		// _BotColor ("Bottom Color", Color) = (0,1,0,1)			// green
 		
 		// Maximum Height which is possible with the mesh
-		_TopHeight ("Top Height", Float) =  	500		
-		
-		// increases the mid color surface
-		_MidColorExtender ("Middle Color Extender Factor", Float) = 0.5
+		_TopHeight ("Top Height", Float) =  	500				
 		
 		// Reflectance of ambient light
 		_Ka("Ambient Reflectance", Range(0, 1)) = 0.5
@@ -44,9 +41,9 @@
 			#include "UnityLightingCommon.cginc"
 			
 			float _Ka, _Kd;
-			fixed4 _TopColor, _MidColor, _BotColor, _WatColor;
-			float _BotHeight, _MidHeight, _TopHeight, _MidColorExtender;
-			sampler2D _ContourLineTex;
+			// fixed4 _TopColor, _MidColor, _BotColor ;
+			float _TopHeight ;
+			sampler2D _ColorTex, _ContourLineTex;
 			
 			// Vertex Shader inputs
 			struct appdata 
@@ -96,25 +93,24 @@
             fixed4 frag (v2f i) : COLOR
             {
 				fixed4 col;
-				float _MidHeight = _TopHeight / 2;
-				float _BotHeight = 	0;
+
+				// Coloring with the color Map
+				col = tex2D(_ColorTex, (i.worldPos.y/_TopHeight) );
 				
+				// // Coloring without color Map
+				// float _MidHeight = _TopHeight / 2;
+				// float _BotHeight = 	0;
 				// COLORING depending on height
-				// Water
-				if ( i.worldPos.y < 1 )
-				{
-					col = _WatColor;
-				}
-				//  lower Half  - transition from green to yellow
-				else if ( i.worldPos.y <= _MidHeight )
-				{
-					col = lerp( _MidColor, _BotColor, (1-(i.worldPos.y/_MidHeight))*_MidColorExtender );	// 2 + 2 thaz 4 - quick MATHS
-				}
-				// upper Half - transition from yellow to red
-				else if ( i.worldPos.y <= _TopHeight )
-				{
-					col = lerp( _MidColor, _TopColor, ((i.worldPos.y - _MidHeight)/ _MidHeight)*_MidColorExtender );
-				}
+				// //  lower Half  - transition from green to yellow
+				// else if ( i.worldPos.y <= _MidHeight )
+				// {
+					// col = lerp( _MidColor, _BotColor, (1-(i.worldPos.y/_MidHeight)) );	// 2 + 2 thaz 4 - quick MATHS
+				// }
+				// // upper Half - transition from yellow to red
+				// else if ( i.worldPos.y <= _TopHeight )
+				// {
+					// col = lerp( _MidColor, _TopColor, ((i.worldPos.y - _MidHeight)/ _MidHeight) );
+				// }
 				
 				//sample the texture
                 col *= tex2D(_ContourLineTex, i.uv);
@@ -124,8 +120,12 @@
 				
                 return col;
             }
+		
+
 		ENDCG
         }
 
 	}	
 }
+
+

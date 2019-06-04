@@ -115,6 +115,10 @@ public class TerrainBuilder : MonoBehaviour
                 meshSpecArray[y / subMeshSize, x / subMeshSize] = meshSpecs;
                 //add mesh to meshFilter
                 meshFilter.mesh = mesh;
+				
+				GetComponent<MeshFilter>().sharedMesh = mesh;
+				// Debug.Log("TerrainBuilder MeshBounds: " + mesh.bounds);
+				// Debug.Log(GetComponent<MeshFilter>().sharedMesh.bounds);
             }
     }
 
