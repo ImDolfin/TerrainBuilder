@@ -67,11 +67,73 @@ public class TerrainBuilder : MonoBehaviour
     /// </summary>
     public void generateTerrain()
     {
+<<<<<<< HEAD
         //retrieve the heights in a 2D float array
         this.mapHeightsArray = algorithm.generateMapArray(mapDimension, seedValue, offset);
         //generate the mesh using the heights array
         generateTerrainMesh(mapHeightsArray);
         //colorHeightMap.createNewColorHeightMap(mapHeightsArray);
+=======
+        this.mapHeightsArray = mapHeightsArray;
+        // get biggest possible sub mesh size, divider should not exceed 256 because 256^2 - 1 is the max amount of vertices so any value above will cause artifacts.
+        subMeshSize = findBiggestDivider(mapDimension, 256);
+        //create meshArray to save the generated meshes to the 2D array 
+        meshArray = new Mesh[mapDimension / subMeshSize, mapDimension / subMeshSize];
+        //create meshSpec Array to save the meshes specifications to the 2D array of mesh specifications
+        meshSpecArray = new MeshSpecs[mapDimension / subMeshSize, mapDimension / subMeshSize];
+
+        //Calculate Normals by Using the surrounding heights to further predict the normal
+        //courtesy to Scheitler: https://forum.unity.com/threads/how-not-to-have-visible-mesh-edges.499153/
+        Vector3[,] normals = new Vector3[mapDimension, mapDimension];
+        for (int y = 0; y < mapDimension; y++)
+            for (int x = 0; x < mapDimension; x++)
+            {
+                //calculate the normal for each height based on the surrounding heights. te result should map 1:1 to the mapHeightsArray
+                float height = this.mapHeightsArray[y, x];
+                float heightX = (height - this.mapHeightsArray[Mathf.Clamp(x - 1, 0, mapDimension - 1), y]) - (height - this.mapHeightsArray[Mathf.Clamp(x + 1, 0, mapDimension - 1), y]);
+                float heightY = (height - this.mapHeightsArray[x, Mathf.Clamp(y - 1, 0, mapDimension - 1)]) - (height - this.mapHeightsArray[x, Mathf.Clamp(x + 1, 0, mapDimension - 1)]);
+                //normals are a cross product of two vectors and assign those
+                normals[y, x] = Vector3.Cross(new Vector3(1, heightX, 0), new Vector3(0, heightX, 1));
+            }
+
+        //iterate through the submeshes and create them
+        for (int y = 0; y < mapDimension; y += subMeshSize)
+            for(int x = 0; x < mapDimension; x+= subMeshSize)
+            {
+                //generate a new child gameobject of the parent mesh, which holds the submesh
+                GameObject meshGameObject = new GameObject();
+                meshGameObject.transform.SetParent(gameObject.transform);
+                meshGameObject.AddComponent<MeshRenderer>().material = material;
+                meshGameObject.name = "SubMesh(" + y/subMeshSize + "," + x/subMeshSize + ")";
+                MeshFilter meshFilter = meshGameObject.AddComponent<MeshFilter>();
+                //generate and assign the new mesh
+                MeshSpecs meshSpecs = addSubmesh(x / subMeshSize, y / subMeshSize);
+
+                //assign the normals to the respective vertices
+                for (int i = 0; i < subMeshSize; i++)
+                    for (int j = 0; j < subMeshSize; j++)
+                    {
+                        int index = (i * subMeshSize) + j ;
+                        meshSpecs.normals[index] = normals[i + meshSpecs.firstYPosition - y / subMeshSize, j + meshSpecs.firstXPosition - x / subMeshSize];
+                    }
+
+                //generates the mesh
+                Mesh mesh = meshSpecs.generateMesh();
+                //dislike reassignment, might probably remove the normals formula and simply equal the vertex normals at edges.
+                mesh.normals = meshSpecs.normals;
+
+                //save mesh to array
+                meshArray[y / subMeshSize, x / subMeshSize] = mesh;
+                //save spec to array
+                meshSpecArray[y / subMeshSize, x / subMeshSize] = meshSpecs;
+                //add mesh to meshFilter
+                meshFilter.mesh = mesh;
+				
+				GetComponent<MeshFilter>().sharedMesh = mesh;
+				// Debug.Log("TerrainBuilder MeshBounds: " + mesh.bounds);
+				// Debug.Log(GetComponent<MeshFilter>().sharedMesh.bounds);
+            }
+>>>>>>> origin/Aufgabe-3
     }
 
     /// <summary>
