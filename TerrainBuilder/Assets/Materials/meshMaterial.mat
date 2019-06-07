@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: meshMaterial
-  m_Shader: {fileID: 4800000, guid: 1ddf6a910aad65f409dfa5d6a0293887, type: 3}
+  m_Shader: {fileID: 4800000, guid: e749bd2845df01748a156042d9a6ed76, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -21,6 +21,10 @@ Material:
     m_TexEnvs:
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorTex:
+        m_Texture: {fileID: 2800000, guid: c97c4ce40c6488e43a25ff7c71f2290c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ContourLineTex:
@@ -44,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: c97c4ce40c6488e43a25ff7c71f2290c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -68,24 +72,24 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _Ka: 0.5
-    - _Kd: 0.5
+    - _Ka: 1
+    - _Kd: 1
     - _Metallic: 0
     - _MidColorExtender: 0.5
-    - _MidHeight: 250
+    - _MidHeight: 50
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _TopHeight: 500
+    - _TopHeight: 300
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _BotColor: {r: 0, g: 1, b: 0, a: 1}
+    - _BotColor: {r: 0.38431376, g: 0.5764706, b: 0.16470589, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MidColor: {r: 1, g: 0.92, b: 0.016, a: 1}
-    - _TopColor: {r: 1, g: 0, b: 0, a: 1}
-    - _WatColor: {r: 0, g: 0, b: 1, a: 1}
+    - _MidColor: {r: 0.764151, g: 0.56332964, b: 0.18743324, a: 1}
+    - _TopColor: {r: 1, g: 0.9772173, b: 0.9528302, a: 1}
+    - _WatColor: {r: 0.017087918, g: 0.41375804, b: 0.9056604, a: 1}
