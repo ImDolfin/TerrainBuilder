@@ -16,7 +16,41 @@ public class ContourLines : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		intervall = userIntervall;
+		 
+    }
+	
+	// Compares two vertices and returns the one which is closer to the ContourLine
+	int getVerticeNextToContourLine(int a, int b){
+		float heightA = vertices[a].z;
+		float heightB = vertices[b].z;
+		float modA = vertices[a].z % intervall;
+		float modB = vertices[b].z % intervall;
+		
+		// If the height is under the ContourLine, the modulo has to be inverted
+		if ( heightA < heightB){
+			modA = intervall - modA;
+		}
+		else
+		{
+			modB = intervall - modB;
+		}
+		
+		// The smallest modulo is closest to the ContourLine
+		if (modA < modB)
+		{
+			return a;
+		}
+		else
+		{
+			return b;
+		}
+	}
+	
+
+    // Update is called once per frame
+    void Update()
+    {
+        intervall = userIntervall;
 		meshRenderer = GetComponent<MeshRenderer>();
 		mesh = GetComponent<MeshFilter>().sharedMesh;
 		vertices = mesh.vertices;
@@ -78,40 +112,6 @@ public class ContourLines : MonoBehaviour
 			}
 		}  	
 		texture.Apply();
-		meshRenderer.material.SetTexture("_ContourLineTex", texture); 
-    }
-	
-	// Compares two vertices and returns the one which is closer to the ContourLine
-	int getVerticeNextToContourLine(int a, int b){
-		float heightA = vertices[a].z;
-		float heightB = vertices[b].z;
-		float modA = vertices[a].z % intervall;
-		float modB = vertices[b].z % intervall;
-		
-		// If the height is under the ContourLine, the modulo has to be inverted
-		if ( heightA < heightB){
-			modA = intervall - modA;
-		}
-		else
-		{
-			modB = intervall - modB;
-		}
-		
-		// The smallest modulo is closest to the ContourLine
-		if (modA < modB)
-		{
-			return a;
-		}
-		else
-		{
-			return b;
-		}
-	}
-	
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+		meshRenderer.material.SetTexture("_ContourLineTex", texture);
     }
 }
