@@ -176,7 +176,11 @@ Shader "Custom/ColorAndWaterShader"
 				// to create the Phong Shading. The _Ka, _Kd and _Ks values are adaptable over the
 				// Unity IDE which makes adjusting the dedicated components very easy.
 				col *= (_Ka * amb + _Kd * diff);
-				col += _Ks * spec;
+				
+				if ((worldPos.y < 0.1) & (worldPos.y > -0.1))
+				{
+					col += _Ks * spec;
+				}
 
 				return saturate(col);
 			}
