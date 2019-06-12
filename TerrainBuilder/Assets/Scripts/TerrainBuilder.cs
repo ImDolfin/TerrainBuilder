@@ -35,21 +35,7 @@ public class TerrainBuilder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-         * guess im stupido, y dat not work?
-        GameObject gameObject = GameObject.Find("Mesh");
-        MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
-        Mesh mesh = meshFilter.sharedMesh;
-        Vector3[] vertices = mesh.vertices;
-        for(int i = 0; i < vertices.Length; i++)
-        {
-            Vector3 vertex = gameObject.transform.TransformPoint(vertices[i]);
-            if (vertex.z < 0)
-                vertices[i].z = 0;
-        }
-        mesh.vertices = vertices;
-        
-        meshFilter.mesh = mesh;*/
+
     }
 
     private void OnValidate()
@@ -72,7 +58,6 @@ public class TerrainBuilder : MonoBehaviour
         this.mapHeightsArray = algorithm.generateMapArray(mapDimension, seedValue, offset);
         //generate the mesh using the heights array
         generateTerrainMesh(mapHeightsArray);
-        //colorHeightMap.createNewColorHeightMap(mapHeightsArray);
     }
 
     /// <summary>

@@ -8,27 +8,32 @@ public class CameraMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.position = new Vector3(transform.position.x + speed, transform.position.y, transform.position.z);
-        }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position = new Vector3(transform.position.x - speed, transform.position.y, transform.position.z);
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y - speed, transform.position.z);
-        }
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y + speed, transform.position.z);
-        }
+        Vector3 rotation = transform.eulerAngles;
+
+        if (Input.GetKey(KeyCode.W))
+            transform.localPosition += transform.forward * Time.deltaTime * speed;
+        
+        if (Input.GetKey(KeyCode.S))
+            transform.localPosition -= transform.forward * Time.deltaTime * speed;
+
+        if (Input.GetKey(KeyCode.A))
+            transform.localPosition -= transform.right * Time.deltaTime * speed;
+
+        if (Input.GetKey(KeyCode.D))
+            transform.localPosition += transform.right * Time.deltaTime * speed;
+
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
+            rotation.y += Input.GetAxis("Horizontal") * speed * Time.deltaTime; 
+
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.UpArrow))
+            rotation.x += Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+
+        transform.eulerAngles = rotation;
     }
 }

@@ -351,8 +351,8 @@ MonoBehaviour:
   addRandomOffset: 0
   setZero: 0
   randomOffset: 10
-  radius: 30
-  strength: 30
+  radius: 100
+  strength: 10
 --- !u!1 &1291227183
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21139e2a26ffa6d428b4cf91b5e14a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 100
 --- !u!81 &1291227185
 AudioListener:
   m_ObjectHideFlags: 0
