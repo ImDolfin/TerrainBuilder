@@ -13,7 +13,7 @@ public class TerrainBuilder : MonoBehaviour
     public float offset = 1;
 
     DiamondSquareAlgorithm algorithm = new DiamondSquareAlgorithm();
-    //ColorHeightMap colorHeightMap = new ColorHeightMap();
+
     //reassigning is computationally better than creating a new object.
     MeshSpecs meshSpecs;
     Mesh mesh;
@@ -24,8 +24,6 @@ public class TerrainBuilder : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //collider.convex = true;
-        //collider.isTrigger = true;
         //generate the terrain
         generateTerrain();
         //gameObject.transform.localScale = new Vector3(5f, 5f, 5f);
