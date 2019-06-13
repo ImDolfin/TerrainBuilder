@@ -4,10 +4,22 @@ using UnityEngine;
 
 public class ColorHeightMap : MonoBehaviour
 {
+
+    /// <summary>
+    /// The Idea was to simply map the heights array onto a colormap and apply it to the Mesh
+    /// Using that method, one can easily do changes to the terrain without using a meshcollider.
+    /// avoiding a raycast and update of the meshcollider is much more efficient and precise than 
+    /// the use of the collider and distances. Also, using this way, looping through all the vertices is avoided,
+    /// which reduces the cpu overhead.
+    /// </summary>
     public Renderer renderer;
 
     private Color[] colorHeightMap;
 
+    /// <summary>
+    /// Create a new colormap
+    /// </summary>
+    /// <param name="heightArray"></param>
     public void createNewColorHeightMap(float[,] heightArray)
     {
         int sideLength = heightArray.GetLength(0);
@@ -23,7 +35,7 @@ public class ColorHeightMap : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// return the color map based on the array of heights
     /// </summary>
     /// <param name="heightArray"></param>
     private void retrieveColorHeightMap(float[,] heightArray)
@@ -42,7 +54,7 @@ public class ColorHeightMap : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// render the color map
     /// </summary>
     /// <param name="texture"></param>
     /// <param name="sideLength"></param>
