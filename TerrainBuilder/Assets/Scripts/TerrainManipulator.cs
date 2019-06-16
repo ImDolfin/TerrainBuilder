@@ -20,6 +20,7 @@ public class TerrainManipulator : MonoBehaviour
     /// move the cursor, else one can only select a single point to change it
     /// </summary>
     public bool changeVertexContinuously = true;
+    public bool createCrater = false;
     /// <summary>
     /// adds random offset to the tool
     /// </summary>
@@ -42,6 +43,8 @@ public class TerrainManipulator : MonoBehaviour
     /// </summary>
     public int scale = 10;
 
+    private bool hasBeenCreated = false;
+
     private Vector3 centeredVertex;
     private Vector3 cursorPosition;
     //random number generator
@@ -59,22 +62,60 @@ public class TerrainManipulator : MonoBehaviour
     {
         if (!manipulateTerrain)
             return;
-        //retrieve the currently selected vertex
-        if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+        //Do actions involving the manipulation
+        if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetAxis("Mouse ScrollWheel") < 0f)
         {
             Vector3[] vertices = meshFilter.sharedMesh.vertices;
-            Vector3 hitVertex = castRayOnCollider();
-            if (hitVertex.z == float.NaN)
-                return;
-            if (Input.GetMouseButton(0))
+
+            if (createCrater && !setZero)
             {
-                //increase the height on left mouse button click
-                leftMouseManipulation(hitVertex, vertices);
+                if (!hasBeenCreated)
+                {
+                    Vector3 hitVertex = castRayOnCollider();
+                    if (hitVertex.z == float.NaN)
+                        return;
+                    if (Input.GetMouseButton(0))
+                    {
+                        generateCrater(vertices);
+                        hasBeenCreated = true;
+                    }
+                }
             }
-            else if (Input.GetMouseButton(1))
+            else if (changeVertexContinuously)
             {
-                //decrease the height on left mouse button click
-                rightMouseManipulation(hitVertex, vertices);
+                Vector3 hitVertex = castRayOnCollider();
+                if (hitVertex.z == float.NaN)
+                    return;
+                if (Input.GetMouseButton(0))
+                {
+                    //increase the height on left mouse button click
+                    leftMouseManipulation(hitVertex, vertices);
+                }
+                else if (Input.GetMouseButton(1))
+                {
+                    //decrease the height on left mouse button click
+                    rightMouseManipulation(hitVertex, vertices);
+                }
+            }
+            else if(!changeVertexContinuously)
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    Vector3 hitVertex = castRayOnCollider();
+                    if (hitVertex.z == float.NaN)
+                        return;
+                }
+                if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+                {
+                    //increase the height on left mouse button click
+                    leftMouseManipulation(centeredVertex, vertices);
+                }
+                else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+                {
+                    //decrease the height on left mouse button click
+                    rightMouseManipulation(centeredVertex, vertices);
+                }
+
             }
             //set all vertices heights below 0 to 0
             for(int i = 0; i< vertices.Length; i++)
@@ -184,6 +225,44 @@ public class TerrainManipulator : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="vertices"></param>
+    /// <returns></returns>
+    private void generateCrater(Vector3[] vertices)
+    {
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            //get the distance between the center and the current vertex
+            float distance = calculateLocalVertexDistance(centeredVertex, vertices[i]);
+            //when the vertex is within the defined range
+            if (distance <= radius)
+            {
+                float range = this.radius;
+                float input = distance;
+                float scaleFactor = ((scale * scale) / 2);
+                // The goal is to have a sawtoothwave like function because that resembles the "crater" appearance a bit more
+                // This sine function isn't doing the trick..sadly
+                float craterFactor = scaleFactor * Mathf.Sin((Mathf.PI / range) * (distance));//y = a * sin(bx+c)
+                vertices[i].z += craterFactor;
+                continue;
+            }
+        }
+        float offset = 20f;
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            float distance = calculateLocalVertexDistance(centeredVertex, vertices[i]);
+            //when the vertex is within the defined range
+            if (distance <= radius)
+            {
+                if(vertices[i].z > 0.5f)
+                    vertices[i].z += (((float)random.NextDouble() * 2 * offset) - offset) / 10;
+            }
+        }
+    }
+
     /// <summary>
     /// calculates the gaussion functions height factor based on the distance
     /// </summary>
@@ -204,22 +283,12 @@ public class TerrainManipulator : MonoBehaviour
         return Mathf.Clamp01(gaussian);
     }
 
-    /* USE to create craters for task number 5
-     * private float calculateGaussian(float distance, float radius)
-    {
-        float variance = this.radius;
-        float mean = (radius / 2) ;
-        float input = (distance/2) ;
-        float gaussian = (1 / Mathf.Sqrt(2 * Mathf.PI * variance)) * Mathf.Exp( - Mathf.Pow((input - mean), 2) / (2 * variance));
-        return gaussian;
-    }*/
-
-
     /// <summary>
     /// performs costly operations after release of the mouse button
     /// </summary>
     private void mouseButtonReleased()
     {
+        hasBeenCreated = false;
         //costly operation which will be applied after the mesh has been changed
         meshFilter.sharedMesh.RecalculateNormals();
         meshFilter.sharedMesh.RecalculateBounds();

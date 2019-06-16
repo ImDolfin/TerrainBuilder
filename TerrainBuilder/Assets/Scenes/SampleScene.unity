@@ -434,11 +434,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   manipulateTerrain: 1
   changeVertexContinuously: 1
+  createCrater: 1
   addRandomOffset: 1
   setZero: 0
   randomOffset: 10
-  radius: 50
-  scale: 12
+  radius: 100
+  scale: 10
+  centeredVertex: {x: 0, y: 0, z: 0}
 --- !u!114 &1108260430
 MonoBehaviour:
   m_ObjectHideFlags: 0
