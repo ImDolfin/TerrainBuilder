@@ -1,5 +1,13 @@
 Shader "Custom/ColorAndWaterShader"
 {
+	/*
+	This shader includes both the Water Shader (with scrolling normal maps and Phong Shading) and
+	the Terrain/Colormap shader with Lambert Shading.
+	
+	Lava Texture: Downloaded from https://www.artstation.com/artwork/qDO9N
+	Water Normal Maps: Downloaded from 
+	https://watersimulation.tumblr.com/post/115928250077/scrolling-normal-maps
+	*/
 
 	Properties
 	{
@@ -13,7 +21,8 @@ Shader "Custom/ColorAndWaterShader"
 		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
 		
 		// Four scrollbar values which allow adjusting the scrolling speed of both X/Y-directions
-		// from both Normal Maps, resulting in different wave speeds.
+		// from both Normal Maps, resulting in different wave speeds. Also used in the NightMode.cs
+		// script to adjust the default speed, since Lava flows way slower than water.
 		_xScroll1 ("X Speed 1", Range(-0.5,0.5)) = 0.1
         _yScroll1 ("Y Speed 1", Range(-0.5,0.5)) = 0.09
         _xScroll2 ("X Speed 2", Range(-0.5,0.5)) = 0.03
@@ -25,6 +34,7 @@ Shader "Custom/ColorAndWaterShader"
 		_Ka("Ambient Reflectance", Range(0, 1)) = 0.5
 		_Kd("Diffuse Reflectance", Range(0, 1)) = 0.5
 		_Ks("Specular Reflectance", Range(0, 1)) = 0.5
+		
 		// One additional component for the specular reflection, which adjusts the size of the specular
 		// reflection itself, while _Ks only adjusts the share of the specular component in the Phong Shading
 		_Shininess("Shininess", Range(0.1, 1000)) = 90
@@ -88,7 +98,8 @@ Shader "Custom/ColorAndWaterShader"
 				
 				// Transform vertex from object space to camera clip space
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				// Retreive world space direction from object space vertex position towards camera (and normalize it)
+				// Retreive world space direction from object space vertex position towards camera 
+				// (and normalize it)
 				o.worldSpaceViewDirection = normalize(WorldSpaceViewDir(v.vertex));
 				
 				// Get the vertex normal and tangent, and apply the rotation of the inverse transpose matrix to them
@@ -104,8 +115,9 @@ Shader "Custom/ColorAndWaterShader"
 				o.tangentY = half3(tangent.y, bitangent.y, normal.y);
 				o.tangentZ = half3(tangent.z, bitangent.z, normal.z);
 
-				// Use TRANSFORM_TEX macro from UnityCG.cginc to make sure texture scale and offset is applied correctly
-				// Apply it to Normal Maps as well in order to make them shiftable by script (otherwise the Offset property won't have any effect)
+				// Use TRANSFORM_TEX macro from UnityCG.cginc to make sure texture scale and offset is applied 
+				// correctly. Apply it to Normal Maps as well in order to make them shiftable by script 
+				// (otherwise the Offset property won't have any effect)
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uv_NormalMap1 = TRANSFORM_TEX(v.texcoord, _NormalMap1);
                 o.uv_NormalMap2 = TRANSFORM_TEX(v.texcoord, _NormalMap2);
@@ -125,7 +137,7 @@ Shader "Custom/ColorAndWaterShader"
 				half3 worldSpaceNormal;
 				
 				// Checking if the fragment is water or terrain (using the y-Component of its WorldSpace-Position)
-				if (worldPos.y >= 0.1)
+				if (worldPos.y >= 0.1) // Fragment belongs to terrain
 				{
 					// Coloring with the color Map
 					col = tex2D(_ColorTex, (worldPos.y/_TopHeight) );
@@ -133,7 +145,7 @@ Shader "Custom/ColorAndWaterShader"
 					col *= tex2D(_ContourLineTex, i.uv);
 					worldSpaceNormal = i.normal;
 				}
-				else if ((worldPos.y < 0.1) & (worldPos.y > -0.1))
+				else if ((worldPos.y < 0.1) & (worldPos.y > -0.1)) // Fragment belongs to water
 				{
 					// Main color from the provided texture (usually flat color, but doesn't have to be)
 					col = tex2D(_MainTex, i.uv);
@@ -149,6 +161,13 @@ Shader "Custom/ColorAndWaterShader"
 					worldSpaceNormal.x = dot(i.tangentX, addedNormal);
 					worldSpaceNormal.y = dot(i.tangentY, addedNormal);
 					worldSpaceNormal.z = dot(i.tangentZ, addedNormal);
+				}
+				else 
+				// Shouldn't occur (height below -0.1), added to prevent col and worldSpaceNormal from being 
+				// uninitialized.
+				{
+					col = tex2D(_MainTex, i.uv);
+					worldSpaceNormal = i.normal;
 				}
 				
 				// From here on, the phong shading will be calculated

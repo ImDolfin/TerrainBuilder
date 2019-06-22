@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class NightMode : MonoBehaviour
 {
-	/* A script that includes a toggle in the mesh inspector, which switches
+	/* 
+	A script that includes a toggle in the mesh inspector, which switches
 	the water texture and a color map to a lava texture and a dark, cave-like
-	colormap. */
+	colormap. 
+	Lava Texture: Downloaded from https://www.artstation.com/artwork/qDO9N
+	Water Normal Maps: Downloaded from 
+	https://watersimulation.tumblr.com/post/115928250077/scrolling-normal-maps
+	*/
 	
 	// Toggle for the Night Mode, public so it's visible in the inspector
 	public bool nightModeToggle = false;
