@@ -2,11 +2,11 @@
 
 public class WaterMovementScript : MonoBehaviour
 {
-    float xScroll1;
-	float yScroll1;
-	float xScroll2;
-	float yScroll2;
-    Renderer r;
+    private float xScroll1;
+	private float yScroll1;
+	private float xScroll2;
+	private float yScroll2;
+    private Renderer r;
 
     void Start()
     {

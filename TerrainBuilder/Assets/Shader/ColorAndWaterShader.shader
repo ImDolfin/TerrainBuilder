@@ -15,8 +15,8 @@ Shader "Custom/ColorAndWaterShader"
 		// from both Normal Maps, resulting in different wave speeds.
 		_xScroll1 ("X Speed 1", Range(-0.5,0.5)) = 0.1
         _yScroll1 ("Y Speed 1", Range(-0.5,0.5)) = 0.09
-        _xScroll2 ("X Speed 2", Range(-0.5,0.5)) = 0.08
-        _yScroll2 ("Y Speed 2", Range(-0.5,0.5)) = 0.09
+        _xScroll2 ("X Speed 2", Range(-0.5,0.5)) = 0.03
+        _yScroll2 ("Y Speed 2", Range(-0.5,0.5)) = 0.04
 
 		// Three reflectance components which allow adjusting each component of the Phong Shading,
 		// setting the share of each component in the resulting Phong Shading. 
@@ -30,7 +30,6 @@ Shader "Custom/ColorAndWaterShader"
 		
 		// Maximum Height which is possible with the mesh
 		_TopHeight ("Top Height", Float) =  	500		
-
 	}
 	SubShader
 	{
@@ -123,6 +122,8 @@ Shader "Custom/ColorAndWaterShader"
 				
 				fixed4 col;
 				half3 worldSpaceNormal;
+				
+				// Checking if the fragment is water or terrain (using the y-Component of its WorldSpace-Position)
 				if (worldPos.y >= 0.1)
 				{
 					// Coloring with the color Map
