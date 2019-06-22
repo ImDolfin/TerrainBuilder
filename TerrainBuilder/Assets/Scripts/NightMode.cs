@@ -8,17 +8,23 @@ public class NightMode : MonoBehaviour
 	the water texture and a color map to a lava texture and a dark, cave-like
 	colormap. */
 	
+	// Toggle for the Night Mode, public so it's visible in the inspector
 	public bool nightModeToggle = false;
+	
+	// Texture variables for the currently set Texture, the Water Texture, 
+	// the Lava Texture, the day Colormap and the night Colormap
 	private Texture matTex;
 	private Texture waterTex;
 	private Texture lavaTex;
 	private Texture dayColorMap;
 	private Texture nightColorMap;
+	
 	private Renderer r;
 	
     // Start is called before the first frame update
     void Start()
     {
+		// Get Renderer and load the referenced Textures from Resources directory
         r = GetComponent<Renderer>();
 		waterTex = Resources.Load<Texture2D>("Textures/WaterTexture");
 		lavaTex = Resources.Load<Texture2D>("Textures/LavaTexture");
@@ -29,18 +35,23 @@ public class NightMode : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		matTex = r.material.GetTexture("_WaterTex");
+		// Retrieve the currently set Texture from the Mesh Material
+		matTex = r.material.GetTexture("_MainTex");
 		
-		if(nightModeToggle /*&& (matTex == waterTex)*/){
-			r.material.SetTexture("_WaterTex", lavaTex);
+		// If the night mode is toggled and the texture hasn't been changed yet,
+		// change textures and scrolling values to night mode.
+		if(nightModeToggle && (matTex == waterTex)){
+			r.material.SetTexture("_MainTex", lavaTex);
 			r.material.SetTexture("_ColorTex", nightColorMap);
 			r.material.SetFloat("_xScroll1", 0.007f);
 			r.material.SetFloat("_yScroll1", 0.005f);
 			r.material.SetFloat("_xScroll2", 0.014f);
 			r.material.SetFloat("_yScroll2", 0.01f);
 		}
-		else if(!nightModeToggle /*&& (matTex == lavaTex)*/){
-			r.material.SetTexture("_WaterTex", waterTex);
+		// If the night mode is not toggled and the texture hasn't been changed yet,
+		// change textures and scrolling values to day mode.
+		else if(!nightModeToggle && (matTex == lavaTex)){
+			r.material.SetTexture("_MainTex", waterTex);
 			r.material.SetTexture("_ColorTex", dayColorMap);
 			r.material.SetFloat("_xScroll1", 0.1f);
 			r.material.SetFloat("_yScroll1", 0.09f);

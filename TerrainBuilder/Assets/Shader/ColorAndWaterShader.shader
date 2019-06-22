@@ -3,10 +3,11 @@ Shader "Custom/ColorAndWaterShader"
 
 	Properties
 	{
-		// Three texture inputs for the main texture and the two normal maps 
-		_WaterTex("Water Texture", 2D) = "white" {} //water
+		// Three texture inputs for the main (water) texture and the two normal maps 
+		_MainTex("Water Texture", 2D) = "white" {}
         _NormalMap1 ("Normal Map 1", 2D) = "bump" {}
-        _NormalMap2 ("Normal Map 2", 2D) = "bump" {}		
+        _NormalMap2 ("Normal Map 2", 2D) = "bump" {}
+		
 		// The colormap input textures
 		_ColorTex("Color Texture", 2D) = "normal" {}
 		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
@@ -69,10 +70,10 @@ Shader "Custom/ColorAndWaterShader"
 				float3 normal : NORMAL;
 			};
 
-			fixed4 _NormalMap1_ST, _NormalMap2_ST, _WaterTex_ST;
+			fixed4 _NormalMap1_ST, _NormalMap2_ST, _MainTex_ST;
 			float _Ka, _Kd, _Ks;
 			float _Shininess;
-			sampler2D _WaterTex;
+			sampler2D _MainTex;
 			sampler2D _NormalMap1;
 			sampler2D _NormalMap2;
 			float _TopHeight ;
@@ -105,7 +106,7 @@ Shader "Custom/ColorAndWaterShader"
 
 				// Use TRANSFORM_TEX macro from UnityCG.cginc to make sure texture scale and offset is applied correctly
 				// Apply it to Normal Maps as well in order to make them shiftable by script (otherwise the Offset property won't have any effect)
-				o.uv = TRANSFORM_TEX(v.texcoord, _WaterTex);
+				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uv_NormalMap1 = TRANSFORM_TEX(v.texcoord, _NormalMap1);
                 o.uv_NormalMap2 = TRANSFORM_TEX(v.texcoord, _NormalMap2);
 				
@@ -135,7 +136,7 @@ Shader "Custom/ColorAndWaterShader"
 				else if ((worldPos.y < 0.1) & (worldPos.y > -0.1))
 				{
 					// Main color from the provided texture (usually flat color, but doesn't have to be)
-					col = tex2D(_WaterTex, i.uv);
+					col = tex2D(_MainTex, i.uv);
 					// Sample and encode Normal Maps
 					half3 normal1 = UnpackNormal(tex2D(_NormalMap1, i.uv_NormalMap1));
 					half3 normal2 = UnpackNormal(tex2D(_NormalMap2, i.uv_NormalMap2));
