@@ -31,9 +31,9 @@ public class ContourLines : MonoBehaviour
     private void OnValidate()
     {
         //do not allow a user intervall below 0
-        if (intervall < 0)
+        if (intervall < 1)
         {
-            intervall = 0;
+            intervall = 1;
         }
         drawLines();
     }
