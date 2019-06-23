@@ -1,22 +1,32 @@
 Shader "Custom/ColorAndWaterShader"
 {
+	/*
+	This shader includes both the Water Shader (with scrolling normal maps and Phong Shading) and
+	the Terrain/Colormap shader with Lambert Shading.
+	
+	Lava Texture: Downloaded from https://www.artstation.com/artwork/qDO9N
+	Water Normal Maps: Downloaded from 
+	https://watersimulation.tumblr.com/post/115928250077/scrolling-normal-maps
+	*/
 
 	Properties
 	{
-		// Three texture inputs for the main texture and the two normal maps 
-		_WaterTex("Water Texture", 2D) = "white" {} //water
+		// Three texture inputs for the main (water) texture and the two normal maps 
+		_MainTex("Water Texture", 2D) = "white" {}
         _NormalMap1 ("Normal Map 1", 2D) = "bump" {}
-        _NormalMap2 ("Normal Map 2", 2D) = "bump" {}		
+        _NormalMap2 ("Normal Map 2", 2D) = "bump" {}
+		
 		// The colormap input textures
 		_ColorTex("Color Texture", 2D) = "normal" {}
 		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
 		
 		// Four scrollbar values which allow adjusting the scrolling speed of both X/Y-directions
-		// from both Normal Maps, resulting in different wave speeds.
+		// from both Normal Maps, resulting in different wave speeds. Also used in the NightMode.cs
+		// script to adjust the default speed, since Lava flows way slower than water.
 		_xScroll1 ("X Speed 1", Range(-0.5,0.5)) = 0.1
         _yScroll1 ("Y Speed 1", Range(-0.5,0.5)) = 0.09
-        _xScroll2 ("X Speed 2", Range(-0.5,0.5)) = 0.08
-        _yScroll2 ("Y Speed 2", Range(-0.5,0.5)) = 0.09
+        _xScroll2 ("X Speed 2", Range(-0.5,0.5)) = 0.03
+        _yScroll2 ("Y Speed 2", Range(-0.5,0.5)) = 0.04
 
 		// Three reflectance components which allow adjusting each component of the Phong Shading,
 		// setting the share of each component in the resulting Phong Shading. 
@@ -24,13 +34,13 @@ Shader "Custom/ColorAndWaterShader"
 		_Ka("Ambient Reflectance", Range(0, 1)) = 0.5
 		_Kd("Diffuse Reflectance", Range(0, 1)) = 0.5
 		_Ks("Specular Reflectance", Range(0, 1)) = 0.5
+		
 		// One additional component for the specular reflection, which adjusts the size of the specular
 		// reflection itself, while _Ks only adjusts the share of the specular component in the Phong Shading
 		_Shininess("Shininess", Range(0.1, 1000)) = 90
 		
 		// Maximum Height which is possible with the mesh
 		_TopHeight ("Top Height", Float) =  	500		
-
 	}
 	SubShader
 	{
@@ -70,10 +80,10 @@ Shader "Custom/ColorAndWaterShader"
 				float3 normal : NORMAL;
 			};
 
-			fixed4 _NormalMap1_ST, _NormalMap2_ST, _WaterTex_ST;
+			fixed4 _NormalMap1_ST, _NormalMap2_ST, _MainTex_ST;
 			float _Ka, _Kd, _Ks;
 			float _Shininess;
-			sampler2D _WaterTex;
+			sampler2D _MainTex;
 			sampler2D _NormalMap1;
 			sampler2D _NormalMap2;
 			float _TopHeight ;
@@ -88,7 +98,8 @@ Shader "Custom/ColorAndWaterShader"
 				
 				// Transform vertex from object space to camera clip space
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				// Retreive world space direction from object space vertex position towards camera (and normalize it)
+				// Retreive world space direction from object space vertex position towards camera 
+				// (and normalize it)
 				o.worldSpaceViewDirection = normalize(WorldSpaceViewDir(v.vertex));
 				
 				// Get the vertex normal and tangent, and apply the rotation of the inverse transpose matrix to them
@@ -104,9 +115,10 @@ Shader "Custom/ColorAndWaterShader"
 				o.tangentY = half3(tangent.y, bitangent.y, normal.y);
 				o.tangentZ = half3(tangent.z, bitangent.z, normal.z);
 
-				// Use TRANSFORM_TEX macro from UnityCG.cginc to make sure texture scale and offset is applied correctly
-				// Apply it to Normal Maps as well in order to make them shiftable by script (otherwise the Offset property won't have any effect)
-				o.uv = TRANSFORM_TEX(v.texcoord, _WaterTex);
+				// Use TRANSFORM_TEX macro from UnityCG.cginc to make sure texture scale and offset is applied 
+				// correctly. Apply it to Normal Maps as well in order to make them shiftable by script 
+				// (otherwise the Offset property won't have any effect)
+				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uv_NormalMap1 = TRANSFORM_TEX(v.texcoord, _NormalMap1);
                 o.uv_NormalMap2 = TRANSFORM_TEX(v.texcoord, _NormalMap2);
 				
@@ -123,7 +135,9 @@ Shader "Custom/ColorAndWaterShader"
 				
 				fixed4 col;
 				half3 worldSpaceNormal;
-				if (worldPos.y >= 0.1)
+				
+				// Checking if the fragment is water or terrain (using the y-Component of its WorldSpace-Position)
+				if (worldPos.y >= 0.1) // Fragment belongs to terrain
 				{
 					// Coloring with the color Map
 					col = tex2D(_ColorTex, (worldPos.y/_TopHeight) );
@@ -131,10 +145,10 @@ Shader "Custom/ColorAndWaterShader"
 					col *= tex2D(_ContourLineTex, i.uv);
 					worldSpaceNormal = i.normal;
 				}
-				else if ((worldPos.y < 0.1) & (worldPos.y > -0.1))
+				else if ((worldPos.y < 0.1) & (worldPos.y > -0.1)) // Fragment belongs to water
 				{
 					// Main color from the provided texture (usually flat color, but doesn't have to be)
-					col = tex2D(_WaterTex, i.uv);
+					col = tex2D(_MainTex, i.uv);
 					// Sample and encode Normal Maps
 					half3 normal1 = UnpackNormal(tex2D(_NormalMap1, i.uv_NormalMap1));
 					half3 normal2 = UnpackNormal(tex2D(_NormalMap2, i.uv_NormalMap2));
@@ -147,6 +161,13 @@ Shader "Custom/ColorAndWaterShader"
 					worldSpaceNormal.x = dot(i.tangentX, addedNormal);
 					worldSpaceNormal.y = dot(i.tangentY, addedNormal);
 					worldSpaceNormal.z = dot(i.tangentZ, addedNormal);
+				}
+				else 
+				// Shouldn't occur (height below -0.1), added to prevent col and worldSpaceNormal from being 
+				// uninitialized.
+				{
+					col = tex2D(_MainTex, i.uv);
+					worldSpaceNormal = i.normal;
 				}
 				
 				// From here on, the phong shading will be calculated

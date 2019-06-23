@@ -263,7 +263,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -308,7 +308,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21139e2a26ffa6d428b4cf91b5e14a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
+  movementSpeed: 200
+  rotationSpeed: 50
 --- !u!1 &1108260423
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,6 +326,7 @@ GameObject:
   - component: {fileID: 1108260429}
   - component: {fileID: 1108260430}
   - component: {fileID: 1108260431}
+  - component: {fileID: 1108260432}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -434,11 +436,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   manipulateTerrain: 1
   changeVertexContinuously: 1
-  addRandomOffset: 1
+  createCrater: 0
+  addRandomOffset: 0
   setZero: 0
-  randomOffset: 10
+  randomOffset: -5
   radius: 50
-  scale: 12
+  scale: 5
 --- !u!114 &1108260430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,4 +466,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4ca384de380ea743b500d260bfd17d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userIntervall: 25
+  intervall: 50
+--- !u!114 &1108260432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108260423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa85d14a1a8e334b9c841fd8d61d4af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nightModeToggle: 0
