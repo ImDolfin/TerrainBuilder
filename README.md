@@ -58,9 +58,11 @@ Texturen:
 Aufgabe 5:
 Siehe Branch "Aufgabe-5" und Andere
 Lösung siehe Skript:
+  ColorAndWaterShader <- Nicht ganz funktionierend, da NightMode blockiert, daher auskommentiert. Custom einstellen der Farben für die                            Colormap
   NightMode           <- Ändert das Aussehen des Terrains von Wasser- zu Lavalandschaft => nutzung über Boolean im Inspector.
                          Nutzt Texturen: nightColorMap und LavaTexture
   CameraMovement      <- Bewegt die Camera frei auf allen Achsen => siehe beim an Main Camera angebrachten Skript im Inspector.
+                         Wird Buggy, wenn die Kamera 90° nach oben oder unten gerichtet ist.
   TerrainManipulator  <- Allgemein führt Mausradzurück oder rechte Maustaste zum verringern der Höhe und linke Maustaste sowie                                    Mausradvor zum erhöhen der Höhe  
                          Siehe setZero => setzt alle Höhen im Radius auf 0;
                          Siehe createCrater => erzeugt ein kraterähnliches Gebilde im gegebenen Radius
