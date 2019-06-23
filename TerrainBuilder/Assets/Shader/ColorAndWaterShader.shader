@@ -18,6 +18,14 @@ Shader "Custom/ColorAndWaterShader"
 		
 		// The colormap input textures
 		_ColorTex("Color Texture", 2D) = "normal" {}
+		
+		// The 3 Colors (if you want to create your own color gradient without color Map).
+		// requires uncommenting some code, see big outcommented block in fragment shader
+		_TopColor ("Top Color", Color) = (1,0,0,1)				// red
+		_MidColor ("Middle Color", Color) = (1,0.92,0.016,1) 	// yellow
+		_BotColor ("Bottom Color", Color) = (0,1,0,1)			// green
+		
+		[MaterialToggle] _ContourActivated ("Activate contour lines", Float) = 0
 		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
 		
 		// Four scrollbar values which allow adjusting the scrolling speed of both X/Y-directions
@@ -39,8 +47,10 @@ Shader "Custom/ColorAndWaterShader"
 		// reflection itself, while _Ks only adjusts the share of the specular component in the Phong Shading
 		_Shininess("Shininess", Range(0.1, 1000)) = 90
 		
-		// Maximum Height which is possible with the mesh
-		_TopHeight ("Top Height", Float) =  	500		
+		// This allows adjusting the color map, if desired. Some generated terrains might be unfitting
+		// to always use the same maximum height (from which onwards the color is just plain red), so 
+		// adjusting it over the inspector might be necessary.
+		_TopHeight ("Top Height", Float) = 350		
 	}
 	SubShader
 	{
@@ -81,6 +91,7 @@ Shader "Custom/ColorAndWaterShader"
 			};
 
 			fixed4 _NormalMap1_ST, _NormalMap2_ST, _MainTex_ST;
+			fixed4 _TopColor, _MidColor, _BotColor ;
 			float _Ka, _Kd, _Ks;
 			float _Shininess;
 			sampler2D _MainTex;
@@ -141,7 +152,28 @@ Shader "Custom/ColorAndWaterShader"
 				{
 					// Coloring with the color Map
 					col = tex2D(_ColorTex, (worldPos.y/_TopHeight) );
-					//sample the texture
+					
+					/*
+					// Coloring without color Map (optional feature): if user wants to select their own colors, 
+					// uncomment this block. ATTENTION: This is an optional feature, and not intended for regular
+					// use, as it will for example prevent the Night Mode feature to change the terrain color.
+					float _MidHeight = _TopHeight / 2;
+					float _BotHeight = 	0;
+					// COLORING depending on height
+					//  lower Half  - transition from green to yellow
+					if ( worldPos.y <= _MidHeight )
+					{
+						col = lerp( _MidColor, _BotColor, (1-(worldPos.y/_MidHeight)) );
+					}
+					// upper Half - transition from yellow to red
+					else if ( worldPos.y <= _TopHeight )
+					{
+						col = lerp( _MidColor, _TopColor, ((worldPos.y - _MidHeight)/ _MidHeight) );
+					}
+					*/
+					
+					
+					// Add contour lines
 					col *= tex2D(_ContourLineTex, i.uv);
 					worldSpaceNormal = i.normal;
 				}

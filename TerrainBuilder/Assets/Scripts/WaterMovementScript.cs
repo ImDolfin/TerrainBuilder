@@ -2,6 +2,7 @@
 
 public class WaterMovementScript : MonoBehaviour
 {
+	// Four Scrolling properties, to cover two-dimensional movement for both maps
     private float xScroll1;
 	private float yScroll1;
 	private float xScroll2;
