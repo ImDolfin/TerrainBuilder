@@ -13,8 +13,8 @@ Shader "Custom/ColorAndWaterShader"
 	{
 		// Three texture inputs for the main (water) texture and the two normal maps 
 		_MainTex("Water Texture", 2D) = "white" {}
-        _NormalMap1 ("Normal Map 1", 2D) = "bump" {}
-        _NormalMap2 ("Normal Map 2", 2D) = "bump" {}
+		_NormalMap1 ("Normal Map 1", 2D) = "bump" {}
+		_NormalMap2 ("Normal Map 2", 2D) = "bump" {}
 		
 		// The colormap input textures
 		_ColorTex("Color Texture", 2D) = "normal" {}
@@ -22,19 +22,18 @@ Shader "Custom/ColorAndWaterShader"
 		// The 3 Colors (if you want to create your own color gradient without color Map).
 		// requires uncommenting some code, see big outcommented block in fragment shader
 		_TopColor ("Top Color", Color) = (1,0,0,1)				// red
-		_MidColor ("Middle Color", Color) = (1,0.92,0.016,1) 	// yellow
+		_MidColor ("Middle Color", Color) = (1,0.92,0.016,1)	// yellow
 		_BotColor ("Bottom Color", Color) = (0,1,0,1)			// green
 		
-		[MaterialToggle] _ContourActivated ("Activate contour lines", Float) = 0
 		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
 		
 		// Four scrollbar values which allow adjusting the scrolling speed of both X/Y-directions
 		// from both Normal Maps, resulting in different wave speeds. Also used in the NightMode.cs
 		// script to adjust the default speed, since Lava flows way slower than water.
 		_xScroll1 ("X Speed 1", Range(-0.5,0.5)) = 0.1
-        _yScroll1 ("Y Speed 1", Range(-0.5,0.5)) = 0.09
-        _xScroll2 ("X Speed 2", Range(-0.5,0.5)) = 0.03
-        _yScroll2 ("Y Speed 2", Range(-0.5,0.5)) = 0.04
+		_yScroll1 ("Y Speed 1", Range(-0.5,0.5)) = 0.09
+		_xScroll2 ("X Speed 2", Range(-0.5,0.5)) = 0.03
+		_yScroll2 ("Y Speed 2", Range(-0.5,0.5)) = 0.04
 
 		// Three reflectance components which allow adjusting each component of the Phong Shading,
 		// setting the share of each component in the resulting Phong Shading. 
@@ -82,7 +81,7 @@ Shader "Custom/ColorAndWaterShader"
 				float2 uv : TEXCOORD0;
 				half3 worldSpaceViewDirection : TEXCOORD1;
 				float2 uv_NormalMap1 : TEXCOORD2;
-                float2 uv_NormalMap2 : TEXCOORD3;
+				float2 uv_NormalMap2 : TEXCOORD3;
 				half3 tangentX : TEXCOORD4;
 				half3 tangentY : TEXCOORD5;
 				half3 tangentZ : TEXCOORD6;
@@ -131,7 +130,7 @@ Shader "Custom/ColorAndWaterShader"
 				// (otherwise the Offset property won't have any effect)
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uv_NormalMap1 = TRANSFORM_TEX(v.texcoord, _NormalMap1);
-                o.uv_NormalMap2 = TRANSFORM_TEX(v.texcoord, _NormalMap2);
+				o.uv_NormalMap2 = TRANSFORM_TEX(v.texcoord, _NormalMap2);
 				
 				o.normal = v.normal;
 
