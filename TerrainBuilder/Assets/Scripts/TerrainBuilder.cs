@@ -13,7 +13,7 @@ public class TerrainBuilder : MonoBehaviour
     public float offset = 1;
 
     DiamondSquareAlgorithm algorithm = new DiamondSquareAlgorithm();
-    //ColorHeightMap colorHeightMap = new ColorHeightMap();
+
     //reassigning is computationally better than creating a new object.
     MeshSpecs meshSpecs;
     Mesh mesh;
@@ -26,29 +26,13 @@ public class TerrainBuilder : MonoBehaviour
     {
         //generate the terrain
         generateTerrain();
-        //scale and rotate because we worked with x and y instead of x and z
-        gameObject.transform.localScale = new Vector3(5f, 5f, 5f);
+        //gameObject.transform.localScale = new Vector3(5f, 5f, 5f);
         gameObject.transform.Rotate(Vector3.right, -90);
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*
-         * guess im stupido, y dat not work?
-        GameObject gameObject = GameObject.Find("Mesh");
-        MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
-        Mesh mesh = meshFilter.sharedMesh;
-        Vector3[] vertices = mesh.vertices;
-        for(int i = 0; i < vertices.Length; i++)
-        {
-            Vector3 vertex = gameObject.transform.TransformPoint(vertices[i]);
-            if (vertex.z < 0)
-                vertices[i].z = 0;
-        }
-        mesh.vertices = vertices;
-        
-        meshFilter.mesh = mesh;*/
     }
 
     private void OnValidate()
@@ -71,11 +55,6 @@ public class TerrainBuilder : MonoBehaviour
         this.mapHeightsArray = algorithm.generateMapArray(mapDimension, seedValue, offset);
         //generate the mesh using the heights array
         generateTerrainMesh(mapHeightsArray);
-        //colorHeightMap.createNewColorHeightMap(mapHeightsArray);
-		
-		// GetComponent<MeshFilter>().sharedMesh = mesh;
-		// Debug.Log("TerrainBuilder MeshBounds: " + mesh.bounds);
-		// Debug.Log(GetComponent<MeshFilter>().sharedMesh.bounds);
     }
 
     /// <summary>
@@ -86,6 +65,7 @@ public class TerrainBuilder : MonoBehaviour
     {
         MeshFilter meshFilter = GetComponent<MeshFilter>();
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        MeshCollider meshCollider = GetComponent<MeshCollider>();
         meshSpecs = new MeshSpecs(mapDimension);
         // set variables.
         int index = 0;
@@ -125,7 +105,7 @@ public class TerrainBuilder : MonoBehaviour
         //dislike reassignment, might probably remove the normals formula and simply equal the vertex normals at edges.
         //mesh.normals = meshSpecs.normals;
         //add mesh to meshFilter
-        meshFilter.mesh = mesh;
-
+        meshFilter.sharedMesh = mesh;
+        meshCollider.sharedMesh = mesh;
     }
 }

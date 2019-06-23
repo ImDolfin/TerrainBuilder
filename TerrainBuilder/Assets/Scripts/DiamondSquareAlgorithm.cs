@@ -149,7 +149,7 @@ public class DiamondSquareAlgorithm
     {
         //tricky trick which tests for the number
         //  1000 - 1
-        // =0111 apply logic AND &
+        // =0111 apply logic AND & to the above
         // =0000
         //logic AND(&) will then result in 0
         //technically this will result in 0 being a power of 2 too which is wrong,
