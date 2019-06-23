@@ -25,7 +25,7 @@ Shader "Custom/ColorAndWaterShader"
 		_MidColor ("Middle Color", Color) = (1,0.92,0.016,1) 	// yellow
 		_BotColor ("Bottom Color", Color) = (0,1,0,1)			// green
 		
-		
+		[MaterialToggle] _ContourActivated ("Activate contour lines", Float) = 0
 		_ContourLineTex("_ContourLineTex", 2D) = "normal" {}
 		
 		// Four scrollbar values which allow adjusting the scrolling speed of both X/Y-directions
@@ -171,7 +171,7 @@ Shader "Custom/ColorAndWaterShader"
 					*/
 					
 					
-					//sample the texture
+					// Add contour lines
 					col *= tex2D(_ContourLineTex, i.uv);
 					worldSpaceNormal = i.normal;
 				}
