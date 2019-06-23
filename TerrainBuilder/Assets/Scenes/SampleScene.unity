@@ -463,4 +463,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4ca384de380ea743b500d260bfd17d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userIntervall: 50
+  userIntervall: 25

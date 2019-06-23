@@ -291,5 +291,4 @@ public class TerrainManipulator : MonoBehaviour
 
         return Mathf.Sqrt(difference.sqrMagnitude);
     }
-
 }
