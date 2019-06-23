@@ -1,11 +1,12 @@
 # TerrainBuilder
 it builds terrain
+Am besten auf bearbeiten drücken, keine Ahnung wieso Git das Output nicht formatiert......
 
 Dies ist der Terraingenerierer von:
-Henry Miller
-Sina Müller
-Marcel Sauter
-Julien Jakob
+Henry Miller,
+Sina Müller,
+Marcel Sauter,
+Julien Jakob,
 
 Unity Version:
 2019.1.3f1
