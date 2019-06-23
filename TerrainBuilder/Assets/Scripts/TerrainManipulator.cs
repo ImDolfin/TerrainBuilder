@@ -16,10 +16,17 @@ public class TerrainManipulator : MonoBehaviour
     /// </summary>
     public bool manipulateTerrain = false;
     /// <summary>
-    /// currently not implemented, but if true, then one can 
-    /// move the cursor, else one can only select a single point to change it
+    /// allows the tool to continuously change the mesh
+    /// if this value is false, then one has to select a vertex and manipulate the values within 
+    /// the radius using the scrollwheel
+    /// else, if it is true, then the vertices can be changed without having to lock on a point
+    /// worth noting, if the cursor position doesn't change while continuously changing is true, 
+    /// then the vertex will be locked, so it is easier to stay at a vertex
     /// </summary>
     public bool changeVertexContinuously = true;
+    /// <summary>
+    /// sets the tool to the createrCrater tool, which creates a crater
+    /// </summary>
     public bool createCrater = false;
     /// <summary>
     /// adds random offset to the tool
@@ -31,7 +38,11 @@ public class TerrainManipulator : MonoBehaviour
     public bool setZero = false;
     /// <summary>
     /// random offset of the randomizer
+    /// Negative values will cut down into the generated terrain, 
+    /// which results in a more realistic look than positive values.
+    /// Positive values will create peaks that often look unrealistic.
     /// </summary>
+    [Range(-20f, 20f)]
     public float randomOffset = 10f;
     /// <summary>
     /// radius of the tool
@@ -41,6 +52,7 @@ public class TerrainManipulator : MonoBehaviour
     /// factor by which the tool will be scaled. 
     /// This scale will be squared, so be carefull with high values
     /// </summary>
+   [Range(0, 10)]
     public int scale = 10;
 
     private bool hasBeenCreated = false;
@@ -62,26 +74,31 @@ public class TerrainManipulator : MonoBehaviour
     {
         if (!manipulateTerrain)
             return;
+        else
+            manipulateMesh();
+    }
+
+    private void OnValidate()
+    {
+        //do not allow a map dimension below 2 because 2^0 + 1 is technically the lowest possible number.
+        if (radius < 1)
+        {
+            radius = 1;
+        }
+
+    }
+
+    /// <summary>
+    /// Manipulates the Mesh based on the different settings
+    /// </summary>
+    private void manipulateMesh()
+    {
         //Do actions involving the manipulation
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetAxis("Mouse ScrollWheel") < 0f)
         {
             Vector3[] vertices = meshFilter.sharedMesh.vertices;
 
-            if (createCrater && !setZero)
-            {
-                if (!hasBeenCreated)
-                {
-                    Vector3 hitVertex = castRayOnCollider();
-                    if (hitVertex.z == float.NaN)
-                        return;
-                    if (Input.GetMouseButton(0))
-                    {
-                        generateCrater(vertices);
-                        hasBeenCreated = true;
-                    }
-                }
-            }
-            else if (changeVertexContinuously)
+            if (changeVertexContinuously)
             {
                 Vector3 hitVertex = castRayOnCollider();
                 if (hitVertex.z == float.NaN)
@@ -97,7 +114,7 @@ public class TerrainManipulator : MonoBehaviour
                     rightMouseManipulation(hitVertex, vertices);
                 }
             }
-            else if(!changeVertexContinuously)
+            else if (!changeVertexContinuously)
             {
                 if (Input.GetMouseButton(0))
                 {
@@ -118,7 +135,7 @@ public class TerrainManipulator : MonoBehaviour
 
             }
             //set all vertices heights below 0 to 0
-            for(int i = 0; i< vertices.Length; i++)
+            for (int i = 0; i < vertices.Length; i++)
             {
                 if (vertices[i].z < 0f)
                 {
@@ -136,7 +153,6 @@ public class TerrainManipulator : MonoBehaviour
             }
         }
     }
-
 
     /// <summary>
     /// Casts the ray onto the collider and retrieves the closest hit vertex
@@ -186,7 +202,17 @@ public class TerrainManipulator : MonoBehaviour
                 }
                 if (addRandomOffset)
                 {
+                    if (createCrater)
+                    {
+                        vertices[i].z += scale * scale * calculateCraterFactor(distance, radius) + (((float)random.NextDouble() * 2 * randomOffset) - randomOffset) / 10;
+                        continue;
+                    }
                     vertices[i].z += scale * scale * calculateGaussian(distance, radius) + (((float)random.NextDouble() * 2 * randomOffset) - randomOffset) / 10;
+                    continue;
+                }
+                if (createCrater)
+                {
+                    vertices[i].z += scale * scale * calculateCraterFactor(distance, radius);
                     continue;
                 }
                 vertices[i].z += scale * scale * calculateGaussian(distance, radius);
@@ -215,9 +241,9 @@ public class TerrainManipulator : MonoBehaviour
                     vertices[i].z = 0.0f;
                     continue;
                 }
-                if (addRandomOffset)
+                if (createCrater)
                 {
-                    vertices[i].z -= scale * scale * calculateGaussian(distance, radius) + (((float)random.NextDouble() * 2 * randomOffset) - randomOffset) / 10;
+                    vertices[i].z -= scale * scale * calculateCraterFactor(distance, radius);
                     continue;
                 }
                 vertices[i].z -= scale * scale * calculateGaussian(distance, radius);
@@ -227,60 +253,43 @@ public class TerrainManipulator : MonoBehaviour
 
 
     /// <summary>
-    /// 
+    /// Calculates the factor at each distance which resembles the hight increase
     /// </summary>
-    /// <param name="vertices"></param>
-    /// <returns></returns>
-    private void generateCrater(Vector3[] vertices)
+    /// <param name="distance">distance between the center and the point</param>
+    /// <param name="radius">radius of the gaussian distribution and its mean</param>
+    /// <returns>crater height scaling factor as float</returns>
+    private float calculateCraterFactor(float distance, float radius)
     {
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            //get the distance between the center and the current vertex
-            float distance = calculateLocalVertexDistance(centeredVertex, vertices[i]);
-            //when the vertex is within the defined range
-            if (distance <= radius)
-            {
-                float range = this.radius;
-                float input = distance;
-                float scaleFactor = ((scale * scale) / 2);
-                // The goal is to have a sawtoothwave like function because that resembles the "crater" appearance a bit more
-                // This sine function isn't doing the trick..sadly
-                float craterFactor = scaleFactor * Mathf.Sin((Mathf.PI / range) * (distance));//y = a * sin(bx+c)
-                vertices[i].z += craterFactor;
-                continue;
-            }
-        }
-        float offset = 20f;
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            float distance = calculateLocalVertexDistance(centeredVertex, vertices[i]);
-            //when the vertex is within the defined range
-            if (distance <= radius)
-            {
-                if(vertices[i].z > 0.5f)
-                    vertices[i].z += (((float)random.NextDouble() * 2 * offset) - offset) / 10;
-            }
-        }
+        //when the vertex is within the defined range
+        float range = (radius / 3f) * (radius / 3f);
+        float input = (radius - distance) * 2f;
+        // the strength of the crater circle peaks
+        float peakStrength = radius;
+        // This is the gaussian function with some tweaks to its variables, where we use the whole Gaussian function so the distribution 
+        // will be in the range of 0 to Radius, not only half of it like in the calculateGaussian method
+        float craterFactor = (1 / Mathf.Sqrt(2 * Mathf.PI * range)) * Mathf.Exp(-Mathf.Pow((input - peakStrength), 2) / (2 * range));
+        //*10 to increas the factor and allow better scaling between 1 and 10
+        return craterFactor*10;
     }
 
     /// <summary>
     /// calculates the gaussion functions height factor based on the distance
     /// </summary>
     /// <param name="distance">distance between the center and the point</param>
-    /// <param name="radius">radius of the gaussian distribution</param>
+    /// <param name="radius">radius of the gaussian distribution and its mean</param>
     /// <returns>gaussion height scaling factor as float</returns>
     private float calculateGaussian(float distance, float radius)
     {
-        //variance is the radius * 2 (most outer position of the gaussian function - usually 0)
-        float variance = radius * 2;
+        //variance is the (radius/4) squared because radius/4 is supposed to be the standard deviation
+        float variance = (radius/4f)*(radius/4f);
         //average of the distances in 2D which is the radius
         float mean = radius;
         //input, the distance has to be changed to an actual usable x value which maps onto the function correctly
         float input = (radius-distance);
         //calculate the gaussian value
         float gaussian = (1 / Mathf.Sqrt(2 * Mathf.PI * variance)) * Mathf.Exp( - Mathf.Pow((input - mean), 2) / (2 * variance));
-        //clamp the value between 0 and 1 in order to return the actual scaling factor
-        return Mathf.Clamp01(gaussian);
+        //*10 to increas the factor and allow better scaling between 1 and 10
+        return gaussian *10;
     }
 
     /// <summary>

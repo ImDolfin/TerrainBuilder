@@ -4,36 +4,55 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    public float speed = 5.0f;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    /// <summary>
+    /// Movement speed
+    /// </summary>
+    public float movementSpeed = 5.0f;
+    /// <summary>
+    /// rotational speed
+    /// </summary>
+    public float rotationSpeed = 5.0f;
 
     // Update is called once per frame
     void Update()
     {
+        rotate();
+        move();
+    }
+
+    /// <summary>
+    /// rotates the gameobject around its own axis
+    /// </summary>
+    private void rotate()
+    {
         Vector3 rotation = transform.eulerAngles;
-
-        if (Input.GetKey(KeyCode.W))
-            transform.localPosition += transform.forward * Time.deltaTime * speed;
-        
-        if (Input.GetKey(KeyCode.S))
-            transform.localPosition -= transform.forward * Time.deltaTime * speed;
-
-        if (Input.GetKey(KeyCode.A))
-            transform.localPosition -= transform.right * Time.deltaTime * speed;
-
-        if (Input.GetKey(KeyCode.D))
-            transform.localPosition += transform.right * Time.deltaTime * speed;
-
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
-            rotation.y += Input.GetAxis("Horizontal") * speed * Time.deltaTime; 
-
-        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.UpArrow))
-            rotation.x += Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.LeftArrow))
+            rotation.y -= rotationSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.RightArrow))
+            rotation.y += rotationSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.UpArrow))
+            rotation.x -= rotationSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.DownArrow))
+            rotation.x += rotationSpeed * Time.deltaTime;
 
         transform.eulerAngles = rotation;
+    }
+
+    /// <summary>
+    /// moves the game object on its axis
+    /// </summary>
+    private void move()
+    {
+        if (Input.GetKey(KeyCode.W))
+            transform.localPosition += transform.forward * Time.deltaTime * movementSpeed;
+
+        if (Input.GetKey(KeyCode.S))
+            transform.localPosition -= transform.forward * Time.deltaTime * movementSpeed;
+
+        if (Input.GetKey(KeyCode.A))
+            transform.localPosition -= transform.right * Time.deltaTime * movementSpeed;
+
+        if (Input.GetKey(KeyCode.D))
+            transform.localPosition += transform.right * Time.deltaTime * movementSpeed;
     }
 }

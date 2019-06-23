@@ -8,9 +8,9 @@ using UnityEngine;
 public class TerrainBuilder : MonoBehaviour
 {
     //Dimensions and input variables
-    public int mapDimension = 9;
-    public int seedValue = 3;
-    public float offset = 1;
+    public int mapDimension = 513;
+    public int seedValue = 100;
+    public float offset = 300;
 
     DiamondSquareAlgorithm algorithm = new DiamondSquareAlgorithm();
 

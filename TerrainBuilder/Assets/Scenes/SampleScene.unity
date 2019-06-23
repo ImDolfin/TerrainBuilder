@@ -308,7 +308,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21139e2a26ffa6d428b4cf91b5e14a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
+  movementSpeed: 200
+  rotationSpeed: 50
 --- !u!1 &1108260423
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,12 +436,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   manipulateTerrain: 1
   changeVertexContinuously: 1
-  createCrater: 1
-  addRandomOffset: 1
+  createCrater: 0
+  addRandomOffset: 0
   setZero: 0
-  randomOffset: 10
-  radius: 100
-  scale: 10
+  randomOffset: -5
+  radius: 50
+  scale: 5
 --- !u!114 &1108260430
 MonoBehaviour:
   m_ObjectHideFlags: 0
