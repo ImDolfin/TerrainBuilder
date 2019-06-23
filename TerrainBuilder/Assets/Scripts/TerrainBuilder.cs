@@ -33,7 +33,6 @@ public class TerrainBuilder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     private void OnValidate()
@@ -108,6 +107,5 @@ public class TerrainBuilder : MonoBehaviour
         //add mesh to meshFilter
         meshFilter.sharedMesh = mesh;
         meshCollider.sharedMesh = mesh;
-
     }
 }

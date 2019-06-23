@@ -25,6 +25,7 @@ public class CameraMovement : MonoBehaviour
     /// </summary>
     private void rotate()
     {
+        //all rotations occur in the key direction
         Vector3 rotation = transform.eulerAngles;
         if (Input.GetKey(KeyCode.LeftArrow))
             rotation.y -= rotationSpeed * Time.deltaTime;
@@ -43,6 +44,7 @@ public class CameraMovement : MonoBehaviour
     /// </summary>
     private void move()
     {
+        //movement is standard like with all games 
         if (Input.GetKey(KeyCode.W))
             transform.localPosition += transform.forward * Time.deltaTime * movementSpeed;
 

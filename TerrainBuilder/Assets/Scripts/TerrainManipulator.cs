@@ -303,6 +303,7 @@ public class TerrainManipulator : MonoBehaviour
         meshFilter.sharedMesh.RecalculateBounds();
         //problem is, that the raycast will not hit changed vertices until the colliders mesh is reassigned
         meshCollider.sharedMesh = meshFilter.sharedMesh;
+        ContourLines.updateContourLines = true;
     }
 
     /// <summary>
@@ -369,5 +370,4 @@ public class TerrainManipulator : MonoBehaviour
 
         return Mathf.Sqrt(difference.sqrMagnitude);
     }
-
 }
