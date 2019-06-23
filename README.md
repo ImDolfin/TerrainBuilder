@@ -15,6 +15,7 @@ SampleScene
 
 Folgend befinden sich die Lösungen und die, für die Lösung der Aufgabe relevanten, Assets sowie branches. 
 Zudem befindet sich bei Aufgabe 5 eine kurze Erklärung zu den Extras.
+Für die genauere Funktionsweise und Möglichkeiten siehe Kommentare im Code.
 
 Zu den Lösungen der Aufgaben:
 Aufgabe 1:
@@ -59,7 +60,8 @@ Lösung siehe Skript:
   NightMode           <- Ändert das Aussehen des Terrains von Wasser- zu Lavalandschaft => nutzung über Boolean im Inspector.
                          Nutzt Texturen: nightColorMap und LavaTexture
   CameraMovement      <- Bewegt die Camera frei auf allen Achsen => siehe beim an Main Camera angebrachten Skript im Inspector.
-  TerrainManipulator  <- Siehe setZero => setzt alle Höhen im Radius auf 0;
+  TerrainManipulator  <- Allgemein führt Mausradzurück oder rechte Maustaste zum verringern der Höhe und linke Maustaste sowie                                    Mausradvor zum erhöhen der Höhe  
+                         Siehe setZero => setzt alle Höhen im Radius auf 0;
                          Siehe createCrater => erzeugt ein kraterähnliches Gebilde im gegebenen Radius
                          Siehe changeVertexContinuously => ermöglicht es kontinuierlich die Tools zu benutzen oder, wenn false, die                                                                 Manipulationen mit dem Mausrad durchzuführen
                          Siehe addRandomOffset  => manipuliert die Höhenänderung an jedem Vertex durch Zufallswerte, welche eingestellt                                                    werden können
