@@ -47,8 +47,10 @@ Shader "Custom/ColorAndWaterShader"
 		// reflection itself, while _Ks only adjusts the share of the specular component in the Phong Shading
 		_Shininess("Shininess", Range(0.1, 1000)) = 90
 		
-		// Maximum Height which is possible with the mesh
-		_TopHeight ("Top Height", Float) =  	500		
+		// This allows adjusting the color map, if desired. Some generated terrains might be unfitting
+		// to always use the same maximum height (from which onwards the color is just plain red), so 
+		// adjusting it over the inspector might be necessary.
+		_TopHeight ("Top Height", Float) = 350		
 	}
 	SubShader
 	{
